@@ -1,7 +1,7 @@
 # 종목테이블
 
 ## stock_prices
-
+```
 CREATE TABLE IF NOT EXISTS stock_prices (
         id INT AUTO_INCREMENT PRIMARY KEY,
         symbol VARCHAR(10),
@@ -14,8 +14,11 @@ CREATE TABLE IF NOT EXISTS stock_prices (
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT NULL,
         UNIQUE KEY unique_symbol_datetime (symbol, datetime)
+   )
 
 ## sp500_returns
+
+```
  CREATE TABLE IF NOT EXISTS sp500_returns (
         id INT AUTO_INCREMENT PRIMARY KEY,
         period VARCHAR(10),
@@ -27,9 +30,10 @@ CREATE TABLE IF NOT EXISTS stock_prices (
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         UNIQUE KEY unique_period_date (period, `current_date`)
     )
-
+```
 
 ## interest_rates
+```
  CREATE TABLE IF NOT EXISTS interest_rates (
             id INT AUTO_INCREMENT PRIMARY KEY,
             series_id VARCHAR(50),
@@ -39,8 +43,9 @@ CREATE TABLE IF NOT EXISTS stock_prices (
             updated_at DATETIME DEFAULT NULL,
             UNIQUE KEY unique_series_date (series_id, date)
         )
-
+```
 ## sectors_performance
+```
  CREATE TABLE IF NOT EXISTS sectors_performance (
             id INT AUTO_INCREMENT PRIMARY KEY,
             sector VARCHAR(255),
@@ -48,9 +53,10 @@ CREATE TABLE IF NOT EXISTS stock_prices (
             fetched_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             UNIQUE KEY unique_sector_fetched (sector, fetched_at)
         )
-
+```
 
 ## fred_vix
+```
  CREATE TABLE IF NOT EXISTS fred_vix (
         id INT AUTO_INCREMENT PRIMARY KEY,
         observation_date DATE NOT NULL,
@@ -59,9 +65,10 @@ CREATE TABLE IF NOT EXISTS stock_prices (
         updated_at DATETIME DEFAULT NULL,
         UNIQUE KEY unique_observation_date (observation_date)
     )
-
+```
 
 ## stock_financials
+```
  CREATE TABLE IF NOT EXISTS stock_financials (
         id INT AUTO_INCREMENT PRIMARY KEY,
         symbol VARCHAR(10),
@@ -80,3 +87,4 @@ CREATE TABLE IF NOT EXISTS stock_prices (
         updated_at DATETIME DEFAULT NULL,
         UNIQUE KEY unique_symbol_date (symbol, target_date)
     )
+```
