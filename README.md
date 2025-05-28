@@ -1,6 +1,7 @@
 # 종목테이블
 
 ## stock_prices
+
 ```
 CREATE TABLE IF NOT EXISTS stock_prices (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -15,9 +16,9 @@ CREATE TABLE IF NOT EXISTS stock_prices (
         updated_at DATETIME DEFAULT NULL,
         UNIQUE KEY unique_symbol_datetime (symbol, datetime)
    )
+```
 
 ## sp500_returns
-
 ```
  CREATE TABLE IF NOT EXISTS sp500_returns (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS stock_prices (
             UNIQUE KEY unique_series_date (series_id, date)
         )
 ```
+
 ## sectors_performance
 ```
  CREATE TABLE IF NOT EXISTS sectors_performance (
