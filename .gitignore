@@ -3,3 +3,5 @@
 
 #environment
 .env
+
+__pycache__
