@@ -24,7 +24,7 @@ symbols = [s.strip() for s in symbols_str.split(',') if s.strip()]
 interval = config.get('api_options', 'interval')
 outputsize = config.get('api_options', 'outputsize')
 # API 키
-api_keys = config.get('api', 'keys').split(',')
+api_keys = config.get('twelve_api', 'keys').split(',')
 
 # API 키가 없으면 종료
 if not api_keys:

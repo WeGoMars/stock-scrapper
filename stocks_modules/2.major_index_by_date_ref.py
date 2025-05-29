@@ -9,7 +9,7 @@ config = configparser.ConfigParser()
 config.read('config.conf', encoding='utf-8')
 
 # 설정 정보 로드
-api_keys = config.get('api', 'keys').split(',')
+api_keys = config.get('fmp_api', 'keys').split(',')
 symbols_str = config.get('symbol_list', 'symbols').replace('\n','').replace('\r', '')
 symbols = [s.strip() for s in symbols_str.split(',') if s.strip()]
 target_date_str = config.get('options', 'target_date')

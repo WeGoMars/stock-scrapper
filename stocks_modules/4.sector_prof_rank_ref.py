@@ -8,7 +8,7 @@ config = configparser.ConfigParser()
 config.read('config.conf', encoding='utf-8')
 
 # API 키
-api_keys = config.get('api', 'keys').split(',')
+api_keys = config.get('fmp_api', 'keys').split(',')
 if not api_keys:
     print("API key가 필요합니다. config.conf에 설정하세요.")
     exit(1)
