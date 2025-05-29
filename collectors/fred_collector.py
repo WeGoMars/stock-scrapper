@@ -8,7 +8,7 @@ from datetime import date
 load_dotenv()  # .env에서 FRED_API_KEY 읽기
 
 FRED_API_KEY = os.getenv("FRED_API_KEY")
-FRED_SERIES_ID = "VIXCLS"
+
 FRED_URL = "https://api.stlouisfed.org/fred/series/observations"
 
 def fetch_vix_range(start_date: date, end_date: date) -> list[dict]:
@@ -19,7 +19,7 @@ def fetch_vix_range(start_date: date, end_date: date) -> list[dict]:
         List[Dict]: [{"date": "2023-01-01", "value": 18.3}, ...]
     """
     params = {
-        "series_id": FRED_SERIES_ID,
+        "series_id": "VIXCLS",
         "api_key": FRED_API_KEY,
         "file_type": "json",
         "observation_start": start_date.isoformat(),

@@ -1,20 +1,36 @@
 from datetime import date, timedelta
-from collectors.market_collector import fetch_vix_range, fetch_fed_rate_range
+from collectors.fred_collector import fetch_vix_range, fetch_fed_rate_range
 from repos.market_repo import insert_vix_data, insert_fed_rate_data
 
-def collect_vix(session):
+from collectors.yfinance_snp500_collector import fetch_snp500_multi_returns
+from repos.market_repo import insert_market_metrics
+
+from sqlalchemy.orm import Session
+
+
+def collect_vix(session:Session):
     today = date.today()
     one_year_ago = today - timedelta(days=365)
     data = fetch_vix_range(start_date=one_year_ago, end_date=today)
     insert_vix_data(session, data)
     
-def collect_fed_rate(session):
+def collect_fed_rate(session:Session):
     today = date.today()
     one_year_ago = today - timedelta(days=365)
     data = fetch_fed_rate_range(start_date=one_year_ago, end_date=today)
     insert_fed_rate_data(session, data)
+    
+def collect_snp500_multi_returns(session: Session, base_date: date=None):
+    """
+    기준일(base_date) 기준으로 SNP500 1M~12M 수익률을 수집하여 저장
+    """
+    if base_date is None:
+        base_date = date.today()
 
-def collect_all_market_metrics(session):
+    data = fetch_snp500_multi_returns(base_date)
+    insert_market_metrics(session, data)
+
+def collect_all_market_metrics(session:Session):
     collect_vix(session)
     collect_fed_rate(session) 
-    # collect_sp500_returns(session)
+    collect_snp500_multi_returns(session)
