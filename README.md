@@ -90,3 +90,8 @@ CREATE TABLE IF NOT EXISTS stock_prices (
         UNIQUE KEY unique_symbol_date (symbol, target_date)
     )
 ```
+
+
+# requirements.txt 파일 작성(사용 lib. 버전 추출)
+pip install pipreqs
+pipreqs /path/to/your/project
