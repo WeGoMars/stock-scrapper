@@ -1,0 +1,8 @@
+FRED_API_KEY = 8e1774e58a619ee55e0e95666e042335
+FMP_API_KEY = 8Z6Td5zeiMrwhjYDPRAvklBUZGonFUuG
+
+DB_HOST=localhost
+DB_NAME=test
+DB_USER=root
+DB_PASSWORD=admin
+# STOCK_API_KEY=your_api_key_here

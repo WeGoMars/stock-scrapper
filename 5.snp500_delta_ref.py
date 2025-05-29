@@ -77,18 +77,18 @@ def store_returns_to_db(data):
         id INT AUTO_INCREMENT PRIMARY KEY,
         period VARCHAR(10),
         base_date DATE,
-        current_date DATE,
+        `current_date` DATE,
         base_price DECIMAL(10,2),
         current_price DECIMAL(10,2),
         return_percent DECIMAL(6,2),
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE KEY unique_period_date (period, current_date)
+        UNIQUE KEY unique_period_date (period, `current_date`)
     )
     ''')
 
     for period, base_date, base_price, return_pct in data:
         cursor.execute('''
-            INSERT INTO sp500_returns (period, base_date, current_date, base_price, current_price, return_percent)
+            INSERT INTO sp500_returns (period, base_date, `current_date`, base_price, current_price, return_percent)
             VALUES (%s, %s, %s, %s, %s, %s)
             ON DUPLICATE KEY UPDATE
                 base_price = VALUES(base_price),

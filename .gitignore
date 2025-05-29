@@ -1,2 +1,5 @@
 #config
 *.conf
+
+#environment
+.env
