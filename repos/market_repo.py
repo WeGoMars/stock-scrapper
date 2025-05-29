@@ -21,3 +21,18 @@ def insert_vix_data(session: Session, vix_list: list[dict]):
         )
         session.merge(entity)  # 자동 UPSERT (unique 제약 조건 기반)
     session.commit()
+
+def insert_fed_rate_data(session: Session, fed_list: list[dict]):
+    """
+    기준금리 데이터를 stock_market 테이블에 저장 (name='FEDFUNDS_AVERAGE')
+    """
+    for item in fed_list:
+        entity = StockMarket(
+            name="FEDFUNDS_AVERAGE",
+            timestamp=item["date"],
+            value=item["value"],
+            createdAt=datetime.now(),
+            updatedAt=datetime.now()
+        )
+        session.merge(entity)
+    session.commit()

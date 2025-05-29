@@ -48,3 +48,40 @@ def fetch_vix_range(start_date: date, end_date: date) -> list[dict]:
             continue
 
     return result
+
+
+def fetch_fed_rate_range(start_date: date, end_date: date) -> list[dict]:
+    """
+    FRED API에서 기준금리 상단 (DFEDTARU) 데이터를 수집
+    Returns: [{"date": "2023-01-01", "value": 5.25}, ...]
+    """
+    params = {
+        "series_id": "DFEDTARU",  # 기준금리 상단
+        "api_key": FRED_API_KEY,
+        "file_type": "json",
+        "observation_start": start_date.isoformat(),
+        "observation_end": end_date.isoformat(),
+    }
+
+    response = requests.get(FRED_URL, params=params)
+    if response.status_code != 200:
+        raise RuntimeError(f"FRED 요청 실패: {response.status_code} {response.text}")
+
+    data = response.json()
+    observations = data.get("observations", [])
+
+    result = []
+    for obs in observations:
+        date_str = obs.get("date")
+        value_str = obs.get("value")
+
+        if value_str == ".":
+            continue
+
+        try:
+            value = float(value_str)
+            result.append({"date": date_str, "value": value})
+        except ValueError:
+            continue
+
+    return result
