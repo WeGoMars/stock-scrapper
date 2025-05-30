@@ -52,11 +52,11 @@ def fetch_vix_range(start_date: date, end_date: date) -> list[dict]:
 
 def fetch_fed_rate_range(start_date: date, end_date: date) -> list[dict]:
     """
-    FRED API에서 기준금리 상단 (DFEDTARU) 데이터를 수집
+    FRED API에서 기준금리 평균 (FEDFUNDS) 데이터를 수집
     Returns: [{"date": "2023-01-01", "value": 5.25}, ...]
     """
     params = {
-        "series_id": "DFEDTARU",  # 기준금리 상단
+        "series_id": "FEDFUNDS",  # ✅ 기준금리 평균
         "api_key": FRED_API_KEY,
         "file_type": "json",
         "observation_start": start_date.isoformat(),

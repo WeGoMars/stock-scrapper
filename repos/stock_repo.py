@@ -28,3 +28,10 @@ def insert_stocks(session: Session, stock_list: list[dict]):
         )
         session.merge(entity)  # symbol에 UNIQUE 제약이 있으므로 UPSERT 가능
     session.commit()
+
+def get_existing_symbols(session: Session, symbols: list[str]) -> set[str]:
+    """
+    주어진 심볼 중 이미 DB에 존재하는 심볼들을 반환
+    """
+    rows = session.query(Stock.symbol).filter(Stock.symbol.in_(symbols)).all()
+    return {row.symbol for row in rows}

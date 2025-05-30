@@ -37,8 +37,21 @@ def find_latest_before(data_list, target_date, date_field="date"):
             continue
     return {}
 
-def collect_fmp_stock_financials(symbol: str, target_date: datetime) -> dict | None:
-    print(f"📦 수집 중: {symbol}")
+class FinancialDataIncompleteError(Exception):
+    def __init__(self, symbol: str, missing_fields: list[str]):
+        message = f"{symbol}의 재무 데이터 수집 실패 - 누락된 필드: {', '.join(missing_fields)}"
+        super().__init__(message)
+        self.symbol = symbol
+        self.missing_fields = missing_fields
+
+
+def safe_divide(numerator: float, denominator: float) -> float:
+    if denominator == 0:
+        raise ZeroDivisionError("0으로 나눌 수 없습니다.")
+    return round(numerator / denominator, 2)
+
+def collect_fmp_stock_financials(symbol: str, target_date: datetime) -> dict:
+    print(f"📦 수집 중: {symbol} 재무정보")
     api_key = get_next_api_key()
 
     urls = {
@@ -56,8 +69,7 @@ def collect_fmp_stock_financials(symbol: str, target_date: datetime) -> dict | N
     balance_list = fetch_json(urls["balance"])
 
     if not (profile and ratios and market_cap and income_list and balance_list):
-        print(f"⚠️ {symbol}: 일부 데이터 누락 → 건너뜀")
-        return None
+        raise FinancialDataIncompleteError(symbol, ["API 응답 누락"])
 
     profile = profile[0]
     ratios = ratios[0]
@@ -66,32 +78,16 @@ def collect_fmp_stock_financials(symbol: str, target_date: datetime) -> dict | N
     balance = find_latest_before(balance_list, target_date)
 
     try:
-        eps = round(float(income["netIncome"]) / float(income["weightedAverageShsOut"]), 2)
-    except:
-        eps = None
-
-    try:
+        eps = safe_divide(float(income["netIncome"]), float(income["weightedAverageShsOut"]))
         equity = float(balance["totalStockholdersEquity"])
         price = float(profile["price"])
         shares = float(market_cap["marketCap"]) / price
-        bps = round(equity / shares, 2)
-    except:
-        bps = None
-
-    try:
-        dividend_yield = round(float(profile["lastDiv"]) / float(profile["price"]) * 100, 2)
-    except:
-        dividend_yield = None
-
-    try:
-        current_ratio = round(float(balance["totalCurrentAssets"]) / float(balance["totalCurrentLiabilities"]), 2)
-    except:
-        current_ratio = None
-
-    try:
-        debt_ratio = round(float(balance["totalLiabilities"]) / float(balance["totalStockholdersEquity"]), 2)
-    except:
-        debt_ratio = None
+        bps = safe_divide(equity, shares)
+        dividend_yield = safe_divide(float(profile["lastDiv"]), price) * 100
+        current_ratio = safe_divide(float(balance["totalCurrentAssets"]), float(balance["totalCurrentLiabilities"]))
+        debt_ratio = safe_divide(float(balance["totalLiabilities"]), equity)
+    except (KeyError, ValueError, ZeroDivisionError) as e:
+        raise FinancialDataIncompleteError(symbol, [str(e)])
 
     result = {
         "symbol": symbol,
@@ -107,6 +103,11 @@ def collect_fmp_stock_financials(symbol: str, target_date: datetime) -> dict | N
         "currentRatio": current_ratio,
         "debtRatio": debt_ratio
     }
+
+    # 누락된 필드 체크
+    missing_fields = [k for k, v in result.items() if v is None]
+    if missing_fields:
+        raise FinancialDataIncompleteError(symbol, missing_fields)
 
     print(f"✅ {symbol} 수집 완료 → {result}")
     return result

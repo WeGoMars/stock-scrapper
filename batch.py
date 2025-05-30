@@ -21,20 +21,20 @@ def main():
     try:
         
         # 1. 종목 메타데이터 먼저 수집 (Stock 테이블)
-        # print("📦 종목 기본 정보 수집 시작...")
-        # collect_stock_profiles_yf(session,symbols)
+        print("📦 종목 기본 정보 수집 시작...")
+        stock_service.collect_stock_profiles_yf(session,symbols)
         # print("✅ 종목 기본 정보 수집 완료.")
         
-        # collect_all_market_metrics(session)
-        # print("✅ 시장 데이터 수집 완료")
+        market_service.collect_all_market_metrics(session)
+        print("✅ 시장 데이터 수집 완료")
 
         financial_service.collect_missing_financials(session, symbols)
-        print("✅ FMP 재무 데이터 수집 완료")
+        # print("✅ FMP 재무 데이터 수집 완료")
         
         # 일봉 수집
-        # ohlcv_service.collect_ohlcv_daily(session, symbols)
-        # ohlcv_service.collect_monthly_ohlcv(session,symbols)
-        # ohlcv_service.collect_weekly_ohlcv(session,symbols)
+        ohlcv_service.collect_ohlcv_daily(session, symbols)
+        ohlcv_service.collect_ohlcv_weekly(session,symbols)
+        ohlcv_service.collect_ohlcv_monthly(session,symbols)
         
     except Exception as e:
         print(f"❌ 오류 발생: {e}")
