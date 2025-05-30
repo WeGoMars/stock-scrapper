@@ -1,6 +1,6 @@
 # services/financial_service.py
 
-from collectors import fmp_financial_collector
+from collectors import fmp_financial_sector_collector
 from repos import financial_repo
 from sqlalchemy.orm import Session
 from typing import List
@@ -18,7 +18,7 @@ def collect_missing_financials(session: Session, symbols: List[str]):
             print(f"⏩ {symbol}: 최근 데이터 존재 → 스킵")
             continue
 
-        data = fmp_financial_collector.collect_fmp_stock_financials(symbol, today)
+        data = fmp_financial_sector_collector.collect_fmp_stock_financials(symbol, today)
         if data:
             # insert_financial_data()는 미리 작성된 bulk upsert용 함수로 가정
             financial_repo.insert_financials_bulk(session, [data])

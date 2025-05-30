@@ -111,3 +111,60 @@ def collect_fmp_stock_financials(symbol: str, target_date: datetime) -> dict:
 
     print(f"✅ {symbol} 수집 완료 → {result}")
     return result
+
+
+
+
+
+
+
+
+
+def fetch_sector_performance_from_fmp(max_retries: int = 3) -> List[Dict]:
+    """
+    FMP API에서 섹터별 수익률을 수집합니다.
+    Returns: [{"sector": "Technology", "return": 1.23}, ...]
+    """
+    for _ in range(max_retries):
+        api_key = get_next_api_key()
+        url = f"{FMP_BASE_URL}/sectors-performance?apikey={api_key}"
+
+        try:
+            response = requests.get(url, timeout=10)
+            
+            print(f"📡 요청 URL: {url}")
+            print(f"📦 응답 상태코드: {response.status_code}")
+            print("📄 응답 본문:")
+            print(response.text)  # 전체 본문 출력
+            
+            if response.status_code != 200:
+                print(f"❌ 요청 실패: {response.status_code} - {response.text}")
+                continue
+
+            data = response.json()
+
+            if not isinstance(data, list):
+                print("⚠️ 응답 형식이 예상과 다릅니다.")
+                continue
+
+            result = []
+            for item in data:
+                sector = item.get("sector")
+                change_str = item.get("changesPercentage")
+
+                if not sector or not change_str:
+                    continue
+
+                try:
+                    change = float(change_str.replace('%', ''))
+                    result.append({"sector": sector, "return": change})
+                except ValueError:
+                    continue
+
+            return result
+
+        except Exception as e:
+            print(f"⚠️ 예외 발생: {e}")
+
+    print("❌ 모든 키에서 요청 실패")
+    return []
