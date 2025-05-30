@@ -13,7 +13,8 @@ def load_symbols_from_txt(path: str) -> list[str]:
 def main():
     txt_path = "./static/symbols.txt"  # 실제 경로에 맞게 조정
     symbols = load_symbols_from_txt(txt_path)
-    symbols = symbols[:2]
+    # 테스트용으로 심볼 앞의 2개만 해볼때
+    # symbols = symbols[:2]
     
     session = SessionLocal()
     try:
