@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from collectors.fred_collector import fetch_vix_range, fetch_fed_rate_range
+from collectors.fred_vix_fed_collector import fetch_vix_range, fetch_fed_rate_range
 from repos.market_repo import insert_vix_data, insert_fed_rate_data
 
 from collectors.yfinance_snp500_collector import fetch_snp500_multi_returns
