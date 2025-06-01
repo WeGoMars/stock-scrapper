@@ -13,6 +13,9 @@ def collect_ohlcv_intraday(session: Session, symbols: list[str], intervals: list
     today_utc = datetime.utcnow()
     all_results = []
 
+    # ⏱ 슬립 시간 설정
+    sleep_time = 0.8 if "1h" in intervals else 0.5
+
     for symbol in symbols:
         print(f"📦{count}/{len(symbols)} {symbol} 분봉 수집 중...")
         count += 1
@@ -40,7 +43,7 @@ def collect_ohlcv_intraday(session: Session, symbols: list[str], intervals: list
                 "volume": row["volume"],
             })
 
-        time.sleep(0.5)
+        time.sleep(sleep_time)
 
     # ✅ 최종 bulk insert
     ohlcv_today_repo.insert_ohlcv_today_bulk(session, all_results)

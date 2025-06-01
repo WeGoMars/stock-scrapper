@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from collectors.twelvedata_ohlcv_collector import get_ohlcv_from_twelvedata
+from collectors.yfinance_ohlcv_collector import get_ohlcv_from_yfinance
 from repos import ohlcv_repo
 from datetime import datetime, timezone, timedelta
 import time
@@ -30,7 +31,7 @@ def collect_ohlcv_daily(session: Session, symbols: list[str], max_limit: int = 2
 
         print(f"🔍 {symbol}: {fetch_days}일치 데이터 요청 예정")
 
-        ohlcv_data = get_ohlcv_from_twelvedata(
+        ohlcv_data = get_ohlcv_from_yfinance(
             symbol,
             interval="1day",
             limit=fetch_days
@@ -40,7 +41,7 @@ def collect_ohlcv_daily(session: Session, symbols: list[str], max_limit: int = 2
             continue
 
         for row in ohlcv_data:
-            row["timestamp"] = datetime.strptime(row["timestamp"], "%Y-%m-%d").date()
+            # row["timestamp"] = datetime.strptime(row["timestamp"], "%Y-%m-%d").date()
             row["interval"] = "1day"
             row["symbol"] = symbol
 
@@ -70,12 +71,12 @@ def collect_ohlcv_weekly(session: Session, symbols: list[str], max_limit: int = 
 
         print(f"🔍 {symbol}: {fetch_weeks}주치 데이터 요청 예정")
 
-        raw_data = get_ohlcv_from_twelvedata(symbol, interval="1week", limit=fetch_weeks)
+        raw_data = get_ohlcv_from_yfinance(symbol, interval="1week", limit=fetch_weeks)
         if not raw_data:
             continue
 
         for row in raw_data:
-            row["timestamp"] = datetime.strptime(row["timestamp"], "%Y-%m-%d").date()
+            # row["timestamp"] = datetime.strptime(row["timestamp"], "%Y-%m-%d").date()
             row["interval"] = "1week"
             row["symbol"] = symbol
 
@@ -111,12 +112,12 @@ def collect_ohlcv_monthly(session: Session, symbols: list[str], max_limit: int =
 
         print(f"🔍 {symbol}: {fetch_months}개월치 데이터 요청 예정")
 
-        raw_data = get_ohlcv_from_twelvedata(symbol, interval="1month", limit=fetch_months)
+        raw_data = get_ohlcv_from_yfinance(symbol, interval="1month", limit=fetch_months)
         if not raw_data:
             continue
 
         for row in raw_data:
-            row["timestamp"] = datetime.strptime(row["timestamp"], "%Y-%m-%d").date()
+            # row["timestamp"] = datetime.strptime(row["timestamp"], "%Y-%m-%d").date()
             row["interval"] = "1month"
             row["symbol"] = symbol
 
