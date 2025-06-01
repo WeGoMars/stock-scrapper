@@ -11,7 +11,7 @@ def load_symbols_from_txt(path: str) -> list[str]:
 
 def run_batch_job(symbol_txt_path: str = "./static/symbols.txt") -> None:
     symbols = load_symbols_from_txt(symbol_txt_path)
-    symbols=symbols[:2]
+    # symbols=symbols[:2]
 
     session = SessionLocal()
     try:
