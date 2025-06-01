@@ -18,6 +18,6 @@ class StockOhlcvToday(Base):
     updatedAt = Column(DateTime, default=func.now(), onupdate=func.now())
 
     __table_args__ = (
-        UniqueConstraint("stock_id", "interval", name="UQ_STOCK_OHLCV_TODAY"),
-        Index("IDX_STOCK_OHLCV_TODAY", "stock_id", "interval"),
+        UniqueConstraint("stock_id", "interval", "timestamp", name="UQ_STOCK_OHLCV_TODAY"),
+        Index("IDX_STOCK_OHLCV_TODAY", "stock_id", "interval", "timestamp"),
     )
