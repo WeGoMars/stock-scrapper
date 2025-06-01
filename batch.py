@@ -11,7 +11,7 @@ def load_symbols_from_txt(path: str) -> list[str]:
         return symbols
 
 def main():
-    txt_path = "./static/symbols.txt"  # 실제 경로에 맞게 조정
+    txt_path = "./static/symbols.txt" 
     symbols = load_symbols_from_txt(txt_path)
     # 테스트용으로 심볼 앞의 2개만 해볼때
     # symbols = symbols[:2]
@@ -26,9 +26,6 @@ def main():
         
         market_service.collect_all_market_metrics(session)
         print("✅ 시장 데이터 수집 완료")
-
-        financial_service.collect_missing_financials(session, symbols)
-        print("✅ FMP 재무 데이터 수집 완료")
         
         sector_service.collect_sector_performance(session)
         print("✅ 섹터 수익률 수집 완료")
@@ -39,6 +36,9 @@ def main():
         ohlcv_service.collect_ohlcv_weekly(session,symbols)
         # 월봉 수집
         ohlcv_service.collect_ohlcv_monthly(session,symbols)
+        
+        financial_service.collect_missing_financials(session, symbols)
+        print("✅ FMP 재무 데이터 수집 완료")
         
     except Exception as e:
         print(f"❌ 오류 발생: {e}")
