@@ -8,6 +8,10 @@ import signal
 import sys
 
 def get_us_market_status() -> str:
+    """
+    미국 주식 시장 상태 반환 (UTC 기준)
+    Returns: 'pre', 'regular', 'after', or 'closed'
+    """
     now = datetime.now(timezone.utc).time()
     if dtime(9, 0) <= now < dtime(14, 30):
         return "pre"
@@ -29,7 +33,7 @@ def graceful_shutdown(signum, frame):
 signal.signal(signal.SIGINT, graceful_shutdown)
 signal.signal(signal.SIGTERM, graceful_shutdown)
 
-def main_loop(interval_sec: int = 900):
+def main_loop(interval_sec: int = 3600):  # 1시간 간격 루프
     symbols = load_symbols_from_txt("./static/symbols.txt")
     last_batch_date: date | None = None
     batch_eligible_time: datetime | None = None
@@ -37,13 +41,11 @@ def main_loop(interval_sec: int = 900):
     while True:
         now = datetime.now(timezone.utc)
         now_date = now.date()
-        if now.minute == 0:
-            intervals = ["15min", "1h"]
-        else:
-            intervals = ["15min"]
+        intervals = ["1h"]
+
         status = get_us_market_status()
 
-        if status in ("pre", "regular", "after"):
+        if status in ("regular", "after"):
             print(f"🟢 [{now}] 시장 상태: {status} → 실시간 수집")
             session = SessionLocal()
             try:
@@ -55,10 +57,10 @@ def main_loop(interval_sec: int = 900):
                 session.rollback()
             finally:
                 session.close()
-            batch_eligible_time = None  # 다시 초기화
+            batch_eligible_time = None  # 수집했으니 초기화
 
         else:
-            print(f"🔕 [{now}] 시장 상태: closed → 배치 실행 조건 확인")
+            print(f"🔕 [{now}] 시장 상태: {status} → 배치 실행 조건 확인")
 
             # 오프타임 진입 시점 기록
             if batch_eligible_time is None:
@@ -78,5 +80,5 @@ def main_loop(interval_sec: int = 900):
         time.sleep(interval_sec)
 
 if __name__ == "__main__":
-    print("🚀 실시간 + 배치 통합 수집 루프 시작 (15분 간격)")
+    print("🚀 실시간 + 배치 통합 수집 루프 시작 (1시간 간격)")
     main_loop()
