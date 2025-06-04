@@ -45,7 +45,8 @@ def main_loop(interval_sec: int = 3600):  # 1시간 간격 루프
 
         status = get_us_market_status()
 
-        if status in ("regular", "after"):
+        # if status in ("regular", "after"):
+        if status in ("regular"):
             print(f"🟢 [{now}] 시장 상태: {status} → 실시간 수집")
             session = SessionLocal()
             try:
