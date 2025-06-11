@@ -35,10 +35,11 @@ def collect_snp500_multi_returns(session: Session, base_date: date = None):
 
 
 def collect_all_market_metrics(session: Session):
+    collect_snp500_multi_returns(session)
+    print('현재로부터 12개월의 SNP 500 수익률 수집 완료.')
     collect_vix(session)
     print('VIX 수집완료')
     collect_fed_rate(session)
     print('기준금리 수집완료')
-    collect_snp500_multi_returns(session)
-    print('현재로부터 12개월의 SNP 500 수익률 수집 완료.')
+
 
