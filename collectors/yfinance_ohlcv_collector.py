@@ -1,6 +1,10 @@
 import yfinance as yf
 from typing import List, Dict
 
+def convert_yahoo_symbol(symbol: str) -> str:
+    # Yahoo Finance는 . 대신 - 사용
+    return symbol.replace('.', '-')
+
 def get_ohlcv_from_yfinance(symbol: str, interval: str, limit: int = 100) -> List[Dict]:
     yf_interval_map = {
         "1day": "1d",
@@ -20,9 +24,12 @@ def get_ohlcv_from_yfinance(symbol: str, interval: str, limit: int = 100) -> Lis
 
     yf_interval = yf_interval_map[interval]
     yf_period = yf_period_map[interval]
+    
+    # 심볼 변환
+    yahoo_symbol = convert_yahoo_symbol(symbol)
 
     try:
-        ticker = yf.Ticker(symbol)
+        ticker = yf.Ticker(yahoo_symbol)
         hist = ticker.history(period=yf_period, interval=yf_interval)
 
         if hist.empty:
