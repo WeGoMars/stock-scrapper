@@ -1,8 +1,8 @@
 import yfinance as yf
 from typing import List, Dict
+import math
 
 def convert_yahoo_symbol(symbol: str) -> str:
-    # Yahoo Finance는 . 대신 - 사용
     return symbol.replace('.', '-')
 
 def get_ohlcv_from_yfinance(symbol: str, interval: str, limit: int = 100) -> List[Dict]:
@@ -25,7 +25,6 @@ def get_ohlcv_from_yfinance(symbol: str, interval: str, limit: int = 100) -> Lis
     yf_interval = yf_interval_map[interval]
     yf_period = yf_period_map[interval]
     
-    # 심볼 변환
     yahoo_symbol = convert_yahoo_symbol(symbol)
 
     try:
@@ -38,6 +37,15 @@ def get_ohlcv_from_yfinance(symbol: str, interval: str, limit: int = 100) -> Lis
 
         results = []
         for dt, row in hist.iterrows():
+            values = [row["Open"], row["High"], row["Low"], row["Close"]]
+            if any(math.isnan(v) for v in values):
+                print(
+                    f"⚠️ {symbol} {dt.strftime('%Y-%m-%d')} 수집 누락: NaN 포함 → "
+                    f"open={row['Open']}, high={row['High']}, low={row['Low']}, close={row['Close']}"
+                )
+                print(f"↳ 원본 row: {row.to_dict()}")
+                continue
+
             results.append({
                 "symbol": symbol,
                 "interval": interval,
