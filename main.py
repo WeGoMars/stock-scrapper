@@ -50,8 +50,8 @@ def main_loop(interval_sec: int = 3600):  # 1시간 간격 루프
             print(f"🟢 [{now}] 시장 상태: {status} → 실시간 수집")
             session = SessionLocal()
             try:
-                # collect_ohlcv_intraday(session, symbols, intervals)
-                print("실시간 수집 임시 종료 상태!")
+                collect_ohlcv_intraday(session, symbols, intervals)
+                # print("실시간 수집 임시 종료 상태!")
                 print("✅ 실시간 수집 완료")
             except Exception as e:
                 print(f"❌ 실시간 수집 오류: {e}")
